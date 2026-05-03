@@ -1,2 +1,1 @@
-# BioScript
-BioGate: An end-to-end Waste Management &amp; Carbon Optimization System. It uses a Python/JS engine to calculate methane vs. CO2 savings, incentivizing users with "Bio-Points" and rewards. Features specialized dashboards for factories and local vendors to build a circular, prestige-based green economy.
+[https://drive.google.com/drive/folders/1uQ2AB1aTk90RdiSsiYJxgJfIxOpmuqHX](https://drive.google.com/file/d/1mVIWBkVdD7D-oiYIDVfaN6-M9QfonebU/view?usp=sharing)
