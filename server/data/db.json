@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": "NFhtzrMMkMqFx8Al",
+      "type": "Fabrika",
+      "companyName": "Seyda",
+      "email": "seydayal@gmail.com",
+      "passwordHash": "$2a$10$lEiwkpaacevz5h7ztXvBROlhlWwYqttL7VZvnOMXscyPUSxMFagTy",
+      "verified": true,
+      "createdAt": "2026-05-03T06:44:14.646Z"
+    },
+    {
+      "id": "HsR8clUjCxCDHSCB",
+      "type": "Isı alıcısı",
+      "companyName": "ebra",
+      "email": "ebra.nur.yynk34@gmail.com",
+      "passwordHash": "$2a$10$bNqI3lmUl2oejvmJ2leDGeqR4rRM76AYvsZp5CM2gX3JQUlxXW9ru",
+      "verified": true,
+      "createdAt": "2026-05-03T06:45:44.878Z"
+    }
+  ],
+  "heatRequests": [],
+  "contactMessages": [],
+  "matches": [],
+  "notifications": [],
+  "factorySources": [
+    {
+      "id": "src-duzce-osb-1",
+      "factoryName": "Düzce I. OSB Kaynağı",
+      "city": "Düzce",
+      "temperature": "70–95°C",
+      "sector": "Kurutma / proses ısısı",
+      "status": "Aktif"
+    },
+    {
+      "id": "src-kocaeli-gebze-1",
+      "factoryName": "Gebze OSB Atık Isı Kaynağı",
+      "city": "Kocaeli",
+      "temperature": "90–140°C",
+      "sector": "Proses ön ısıtma",
+      "status": "İnceleniyor"
+    },
+    {
+      "id": "src-sakarya-osb-1",
+      "factoryName": "Sakarya OSB Isı Kaynağı",
+      "city": "Sakarya",
+      "temperature": "80–120°C",
+      "sector": "Soğuk depo / ısı dönüşümü",
+      "status": "Aktif"
+    }
+  ]
+}
