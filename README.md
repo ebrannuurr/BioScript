@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BioGate - Orijinal Yapı Korunmuş Fullstack Sürüm
 
 Bu sürümde orijinal BioGate tasarımı korunmuştur.
@@ -96,3 +97,7 @@ Geliştiriciler admin panelinde:
 - Fabrika/kaynak tarafına bildirim gitmez.
 
 Bu yapı, gerçek iş modeline daha uygundur: BioGate ekibi aradaki değerlendirme ve operasyonu yönetir.
+=======
+# BioScript
+BioGate: An end-to-end Waste Management &amp; Carbon Optimization System. It uses a Python/JS engine to calculate methane vs. CO2 savings, incentivizing users with "Bio-Points" and rewards. Features specialized dashboards for factories and local vendors to build a circular, prestige-based green economy.
+>>>>>>> 1ed06196ae63ea6a1849f6f72bf01941dd3b5099
