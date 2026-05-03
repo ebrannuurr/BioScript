@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioGate | Atık Isıdan Temiz Enerjiye Geçiş Sistemi</title>
+  <meta name="description" content="BioGate, sanayi tesislerindeki atık ısıyı analiz eden, dönüştüren, eşleştiren ve karbon/tasarruf etkisini raporlayan temiz enerji platformudur." />
+  <style>
+    :root{
+      --bg:#06100f;
+      --bg2:#08171a;
+      --panel:rgba(8,18,22,.72);
+      --panel2:rgba(255,255,255,.055);
+      --line:rgba(255,255,255,.12);
+      --line2:rgba(133,255,96,.24);
+      --text:#eef8f4;
+      --muted:#9fb4b4;
+      --green:#9cff59;
+      --green2:#63f083;
+      --cyan:#36d7ff;
+      --blue:#3978ff;
+      --orange:#ff8a2a;
+      --danger:#ff5e5e;
+      --shadow:0 28px 80px rgba(0,0,0,.46);
+      --radius:26px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 7%, rgba(156,255,89,.17), transparent 26rem),
+        radial-gradient(circle at 86% 8%, rgba(54,215,255,.14), transparent 28rem),
+        linear-gradient(180deg,#06100f 0%,#071316 42%,#050908 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.16;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size:52px 52px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.75), transparent 80%);
+      z-index:-2;
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    .container{width:min(1180px, calc(100% - 40px)); margin:0 auto;}
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.095), rgba(255,255,255,.035));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:80;
+      border-bottom:1px solid rgba(255,255,255,.09);
+      background:rgba(2,7,8,.76);
+      backdrop-filter:blur(18px);
+    }
+    .nav-inner{
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:900;
+      font-size:26px;
+      letter-spacing:-.04em;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(156,255,89,.22), rgba(54,215,255,.12));
+      border:1px solid rgba(156,255,89,.3);
+      box-shadow:0 0 28px rgba(156,255,89,.12);
+    }
+    .logo svg{width:25px;height:25px;fill:none;stroke:var(--green);stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+    .nav-links{display:flex;align-items:center;gap:28px;font-size:14px;font-weight:700;color:#d9e8e5}
+    .nav-links a{opacity:.86;transition:.2s}
+    .nav-links a:hover{opacity:1;color:var(--green)}
+    .nav-actions{display:flex;gap:10px;align-items:center}
+    .btn{
+      border:0;
+      border-radius:999px;
+      padding:13px 19px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      transition:.25s ease;
+      white-space:nowrap;
+    }
+    .btn svg{width:18px;height:18px}
+    .btn-primary{background:var(--green);color:#07100e;box-shadow:0 14px 35px rgba(156,255,89,.22)}
+    .btn-primary:hover{transform:translateY(-2px);background:#b7ff7d}
+    .btn-ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.13)}
+    .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(54,215,255,.35)}
+    .btn-cyan{background:rgba(54,215,255,.12);color:#c8f5ff;border:1px solid rgba(54,215,255,.32)}
+    .btn-cyan:hover{background:var(--cyan);color:#041014}
+    .btn-danger{background:rgba(255,94,94,.12);color:#ffc5c5;border:1px solid rgba(255,94,94,.3)}
+    .btn-danger:hover{background:#ff5e5e;color:#fff}
+ 
+    /* HERO */
+    .hero{position:relative;min-height:790px;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.08);}
+    .hero-bg{
+      position:absolute;inset:0;
+      background:
+        linear-gradient(90deg, rgba(5,10,10,.84) 0%, rgba(5,10,10,.62) 38%, rgba(5,10,10,.38) 100%),
+        url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=2400&q=80') center/cover no-repeat;
+      transform:scale(1.02);
+      animation:heroZoom 20s ease-in-out infinite alternate;
+      filter:saturate(1.02) contrast(1.00) brightness(.88);
+    }
+    @keyframes heroZoom{from{transform:scale(1.02)}to{transform:scale(1.05)}}
+    .heat-orb{
+      position:absolute;right:6%;top:150px;width:330px;height:330px;border-radius:50%;
+      background:radial-gradient(circle, rgba(255,140,55,.26), rgba(255,140,55,.08) 38%, transparent 72%);
+      filter:blur(4px);opacity:.68;animation:pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse{50%{transform:scale(1.08);opacity:.55}}
+    .flow-lines{
+      position:absolute;inset:0;opacity:.23;
+      background:linear-gradient(90deg, transparent 0 20%, rgba(156,255,89,.08) 21%, transparent 22% 45%, rgba(54,215,255,.08) 46%, transparent 47% 100%);
+      transform:skewY(-9deg) translateY(30px);
+      animation:flowMove 8s linear infinite;
+    }
+    @keyframes flowMove{from{background-position:0 0}to{background-position:380px 0}}
+    .hero-content{position:relative;padding:96px 0 64px;display:grid;grid-template-columns:1fr;gap:48px;align-items:start;max-width:860px;}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 13px;border-radius:999px;color:#d8fff0;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:800;letter-spacing:.02em;}
+    .eyebrow svg{width:17px;height:17px;color:var(--green)}
+    h1{margin:24px 0 0;font-size:clamp(48px,8vw,94px);line-height:.94;letter-spacing:-.075em;max-width:860px;}
+    .accent{color:var(--green)}
+    .hero p.lead{max-width:690px;color:#d2dfdc;font-size:20px;line-height:1.7;margin:26px 0 0;}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+ 
+    .section{padding:88px 0}
+    .section-head{display:flex;justify-content:space-between;gap:32px;align-items:end;margin-bottom:34px}
+    .kicker{color:var(--green);font-size:13px;font-weight:950;letter-spacing:.25em;text-transform:uppercase}
+    h2{font-size:clamp(32px,4vw,58px);line-height:1;letter-spacing:-.055em;margin:12px 0 0}
+    .section-head p{max-width:520px;color:var(--muted);line-height:1.75;margin:0}
+    .cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .info-card{padding:28px;min-height:305px;position:relative;overflow:hidden}
+    .info-card::after{content:"";position:absolute;right:-80px;bottom:-80px;width:210px;height:210px;border:1px solid rgba(156,255,89,.12);border-radius:50%;}
+    .info-head{display:flex;align-items:center;gap:12px;color:var(--green);font-size:19px;font-weight:950}
+    .info-head.cyan{color:var(--cyan)}
+    .info-head svg{width:25px;height:25px}
+    .info-card p{color:#c8d4d2;line-height:1.75;margin:22px 0 0}
+    .check-list{margin-top:22px;display:grid;gap:13px;color:#d7e7e3}
+    .check-list div{display:flex;align-items:center;gap:10px}
+    .check-list svg{width:19px;height:19px;color:var(--green)}
+    .diagram{margin-top:22px;height:90px;display:flex;align-items:center;gap:10px;}
+    .block{flex:1;min-width:0;height:74px;border-radius:18px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);display:grid;place-items:center;text-align:center;color:#d7faff;font-size:12px;font-weight:900;padding:8px}
+    .arrow-line{width:26px;height:2px;background:linear-gradient(90deg,var(--green),var(--cyan));position:relative}
+    .arrow-line::after{content:"";position:absolute;right:-1px;top:-4px;border-left:8px solid var(--cyan);border-top:5px solid transparent;border-bottom:5px solid transparent}
+ 
+    /* ===== DASHBOARD ===== */
+    .dashboard-section{display:none;padding:60px 0 20px;}
+    .dashboard-section.visible{display:block}
+ 
+    /* Kullanıcıya özel banner */
+    .user-banner{
+      display:flex;align-items:center;gap:18px;padding:20px 24px;border-radius:22px;
+      background:linear-gradient(135deg,rgba(156,255,89,.12),rgba(54,215,255,.07));
+      border:1px solid rgba(156,255,89,.22);margin-bottom:24px;
+    }
+    .user-avatar{
+      width:52px;height:52px;border-radius:16px;
+      background:linear-gradient(135deg,rgba(156,255,89,.25),rgba(54,215,255,.15));
+      border:1px solid rgba(156,255,89,.3);
+      display:grid;place-items:center;font-size:22px;font-weight:950;color:var(--green);flex-shrink:0;
+    }
+    .user-banner-info{flex:1}
+    .user-banner-name{font-size:18px;font-weight:950;letter-spacing:-.03em;color:#fff}
+    .user-banner-meta{font-size:13px;color:var(--muted);margin-top:3px}
+    .user-banner-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(156,255,89,.1);color:var(--green);border:1px solid rgba(156,255,89,.22)}
+    .db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.4s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+ 
+    .db-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .db-title{font-size:22px;font-weight:900;letter-spacing:-.04em;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.15em;}
+    .db-sub{font-size:13px;color:rgba(156,255,89,.7);margin-top:3px;font-weight:800;}
+ 
+    .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .kpi{padding:20px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+    .kpi-label{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
+    .kpi-value{font-size:26px;font-weight:950;letter-spacing:-.04em;color:#fff}
+    .kpi-unit{font-size:14px;color:var(--muted);margin-left:3px;font-weight:700}
+    .kpi-delta{font-size:12px;color:var(--green);font-weight:900;margin-top:5px}
+ 
+    .db-charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .db-card{padding:24px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+    .db-card-title{font-size:13px;font-weight:900;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.1em}
+ 
+    .db-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-size:11px;color:var(--muted)}
+    .db-legend span{display:flex;align-items:center;gap:6px}
+    .db-ls{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+ 
+    .db-bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+ 
+    .progress-list{display:grid;gap:14px}
+    .pl-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+    .pl-top strong{color:#fff;font-weight:800}
+    .pl-bar{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+    .pl-fill{height:100%;border-radius:999px}
+ 
+    .db-table{width:100%;border-collapse:collapse;font-size:13px}
+    .db-table th{text-align:left;color:var(--muted);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.1em;padding:0 10px 10px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+    .db-table td{padding:10px 10px 0 0;color:#d5e8e4;vertical-align:middle}
+    .db-table td:last-child{color:var(--green);font-weight:900}
+ 
+    /* Boş durum — sadece fabrika değilse */
+    .empty-dashboard{
+      text-align:center;padding:60px 32px;border-radius:22px;
+      background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.15);
+    }
+    .empty-dashboard svg{width:48px;height:48px;color:rgba(156,255,89,.4);margin-bottom:16px}
+    .empty-dashboard h3{font-size:22px;letter-spacing:-.04em;margin:0 0 10px}
+    .empty-dashboard p{color:var(--muted);line-height:1.7;max-width:420px;margin:0 auto}
+ 
+    /* ===== PROCESS, MARKET, FAQ vb. ===== */
+    .process{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+    .process-card{padding:26px;position:relative}
+    .number{width:38px;height:38px;border-radius:13px;background:var(--green);color:#07100e;display:grid;place-items:center;font-weight:950;font-size:16px}
+    .process-card h3{font-size:22px;margin:20px 0 12px;letter-spacing:-.04em}
+    .process-card p{color:var(--muted);line-height:1.7;margin:0}
+ 
+    .market-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    .table{display:grid;gap:12px}
+    .market-row{display:grid;grid-template-columns:1.1fr .7fr 1fr .7fr;gap:12px;align-items:center;padding:16px;border-radius:18px;background:rgba(255,255,255,.052);border:1px solid rgba(255,255,255,.08);color:#dbe9e6;font-size:14px;}
+    .market-row.header{background:transparent;color:var(--muted);font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;border:0;padding-bottom:0}
+    .pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:7px 10px;font-weight:950;font-size:12px;background:rgba(156,255,89,.12);color:var(--green);border:1px solid rgba(156,255,89,.22)}
+    .form-grid{display:grid;gap:14px}
+    .field label{display:block;color:var(--muted);font-size:12px;font-weight:900;margin-bottom:8px}
+    .field input,.field select,.field textarea{width:100%;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.055);color:#fff;border-radius:17px;padding:14px 15px;outline:none;transition:.2s;}
+    .field textarea{min-height:110px;resize:vertical}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(156,255,89,.45);box-shadow:0 0 0 4px rgba(156,255,89,.07)}
+    select option{background:#08171a;color:#fff}
+ 
+    .calc-result{margin-top:18px;border-radius:22px;background:linear-gradient(135deg,rgba(156,255,89,.13),rgba(54,215,255,.08));border:1px solid rgba(156,255,89,.2);padding:18px}
+    .calc-result strong{font-size:42px;letter-spacing:-.055em;color:var(--green)}
+    .range{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:14px}
+    .range span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--green),var(--cyan));width:58%}
+ 
+    .faq-list{display:grid;gap:13px}
+    .faq-item{border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.045)}
+    .faq-q{width:100%;background:transparent;border:0;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:20px;font-weight:950;cursor:pointer;text-align:left}
+    .faq-a{max-height:0;overflow:hidden;transition:.3s ease;color:var(--muted);line-height:1.7;padding:0 20px}
+    .faq-item.active .faq-a{max-height:180px;padding:0 20px 20px}
+    .faq-q svg{width:18px;height:18px;color:var(--green);transition:.3s}
+    .faq-item.active .faq-q svg{transform:rotate(180deg)}
+ 
+    .footer-cta{padding:48px;border-radius:34px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:radial-gradient(circle at 8% 50%, rgba(156,255,89,.22), transparent 24rem),linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12);}
+    .footer-cta h2{margin:0;font-size:42px}
+    footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.08);color:var(--muted)}
+    .footer-inner{display:flex;justify-content:space-between;gap:24px;align-items:center}
+ 
+    .contact-info{margin-bottom:28px;display:grid;gap:14px}
+    .contact-info-item{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09)}
+    .contact-info-item svg{width:22px;height:22px;color:var(--green);flex-shrink:0}
+    .contact-info-item span{font-size:15px;font-weight:700;color:#d5e8e4}
+ 
+    .toast{position:fixed;right:20px;bottom:20px;z-index:120;max-width:360px;padding:16px 18px;border-radius:20px;background:rgba(8,18,22,.92);border:1px solid rgba(156,255,89,.24);box-shadow:var(--shadow);transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s;}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast.error{border-color:rgba(255,94,94,.4);}
+ 
+    .modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);padding:20px}
+    .modal.show{display:grid}
+    .modal-box{width:min(520px,100%);padding:28px;position:relative}
+    .close{position:absolute;right:18px;top:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:14px;width:38px;height:38px;cursor:pointer}
+    .modal h3{font-size:30px;margin:0 0 6px;letter-spacing:-.05em}
+    .modal p{margin:0 0 20px;color:var(--muted);line-height:1.7}
+ 
+    .user-name{font-size:14px;font-weight:800;color:var(--green)}
+    .field-error{color:var(--danger);font-size:13px;font-weight:800;display:none;margin-top:-6px}
+    .field-error.visible{display:block}
+    .notification-count{min-width:20px;height:20px;border-radius:999px;display:inline-grid;place-items:center;padding:0 6px;background:var(--green);color:#07100e;font-size:11px;font-weight:950;margin-left:4px;}
+    .notification-card{padding:16px;border-radius:18px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);color:#d5e8e4}
+    .notification-card strong{display:block;color:#fff;margin-bottom:6px}
+    .notification-card small{display:block;color:var(--muted);margin-top:8px}
+ 
+    @media(max-width:1020px){
+      .cards-3,.process{grid-template-columns:repeat(2,1fr)}
+      .db-charts-row,.db-bottom-row{grid-template-columns:1fr}
+      .kpi-row{grid-template-columns:repeat(2,1fr)}
+      .market-grid{grid-template-columns:1fr}
+      .section-head{display:block}
+      .section-head p{margin-top:16px}
+    }
+    @media(max-width:760px){
+      .container{width:min(100% - 28px, 1180px)}
+      .nav-inner{min-height:68px;flex-wrap:wrap;gap:14px;padding:12px 0}
+      .nav-links{display:flex;flex-wrap:wrap;gap:14px;width:100%;font-size:12px;justify-content:center}
+      .nav-actions{display:flex;width:100%;justify-content:center;flex-wrap:wrap}
+      #guestActions,#userActions{flex-wrap:wrap;justify-content:center}
+      .hero{min-height:auto}
+      .hero-content{padding-top:68px}
+      h1{font-size:48px}
+      .hero p.lead{font-size:17px}
+      .cards-3,.process{grid-template-columns:1fr}
+      .kpi-row{grid-template-columns:1fr 1fr}
+      .db-charts-row,.db-bottom-row{grid-template-columns:1fr}
+      .market-row{grid-template-columns:1fr 1fr}
+      .market-row.header{display:none}
+      .footer-cta,.footer-inner{grid-template-columns:1fr;display:grid}
+      .hero-actions .btn{width:100%;justify-content:center}
+      .user-banner{flex-direction:column;text-align:center}
+    }
+    .hidden{display:none!important}
+    .form-message{font-size:13px;font-weight:800;color:var(--green);margin-top:10px}
+    .form-message.error{color:var(--danger)}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="BioGate ana sayfa">
+        <span class="logo">
+          <svg viewBox="0 0 24 24"><path d="M7.5 7.5 10.7 2h2.6l3.2 5.5"/><path d="M17.5 7.5h-5.2l-1.3 2.2"/><path d="m18.6 9.4 3.2 5.6-1.3 2.2h-6.4"/><path d="M10 21.5H3.6L2.3 19.3l3.2-5.6"/></svg>
+        </span>
+        BioGate
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#hakkimizda">Hakkımızda</a>
+        <a href="#nasil-calisir">Nasıl Çalışır</a>
+        <a href="#market">Temiz Isı Pazarı</a>
+        <a href="#sertifika">Sertifikalar</a>
+        <a href="#iletisim">İletişim</a>
+        <a href="#admin" id="adminNavLink" class="hidden">Admin Paneli</a>
+      </div>
+      <div class="nav-actions" id="navActions">
+        <div id="guestActions" style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn-ghost" data-open="login">Giriş</button>
+          <button class="btn btn-primary" data-open="register">Kayıt Ol
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <button class="btn btn-cyan" data-open="heatBuy">Isı Satın Al
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 6h15l-2 8H8L6 2H3M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div id="userActions" style="display:none;gap:10px;align-items:center">
+          <span class="user-name" id="userName"></span>
+          <button class="btn btn-ghost" id="notificationBtn" data-open="notifications">Bildirimler <span id="notificationCount" class="notification-count hidden">0</span></button>
+          <button class="btn btn-cyan" data-open="heatBuy">Isı Satın Al</button>
+          <button class="btn btn-danger" id="logoutBtn">Çıkış Yap</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+ 
+  <main id="top">
+ 
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="flow-lines"></div>
+      <div class="heat-orb"></div>
+      <div class="container hero-content">
+        <div>
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 10-13h-7l0-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            Sanayi için atık ısı zekâsı
+          </div>
+          <h1>Atık Isıyı <span class="accent">Temiz Enerjiye</span> Dönüştürün</h1>
+          <p class="lead">Sanayide Kaybolan Atık Isıyı Toplayarak Temiz Enerjiye Dönüştüren ve Ekonomik Değere Çeviren Akıllı Platform.</p>
+          <div class="hero-actions">
+            <button class="btn btn-ghost" data-open="register">Kayıt Ol
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <button class="btn btn-cyan" data-open="heatBuy">Isı Satın Al
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 6h15l-2 8H8L6 2H3M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== DASHBOARD ===== -->
+    <section class="dashboard-section" id="dashboardSection">
+      <div class="container">
+ 
+        <!-- Kullanıcıya özel üst banner -->
+        <div class="user-banner" id="userBanner">
+          <div class="user-avatar" id="userAvatar">—</div>
+          <div class="user-banner-info">
+            <div class="user-banner-name" id="userBannerName">—</div>
+            <div class="user-banner-meta" id="userBannerMeta">—</div>
+          </div>
+          <div class="user-banner-badge"><div class="db-dot"></div>Kişisel verileriniz · Sistem aktif</div>
+        </div>
+ 
+        <!-- Yalnızca Fabrika tipi kullanıcılar için dashboard içeriği -->
+        <div id="dashboardContent">
+ 
+          <div class="db-header">
+            <div>
+              <div class="db-title" style="font-size:13px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.15em">Fabrika Paneli — Mayıs 2026 · Son 6 Ay</div>
+              <div class="db-sub" id="dbSub" style="font-size:13px;color:rgba(156,255,89,.7);font-weight:800;margin-top:4px"></div>
+            </div>
+          </div>
+ 
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-label">Toplam dönüştürülen ısı</div>
+              <div class="kpi-value"><span id="kpiHeat">—</span> <span class="kpi-unit">MWh</span></div>
+              <div class="kpi-delta" id="kpiHeatDelta"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">CO₂ azaltımı (kümülatif)</div>
+              <div class="kpi-value"><span id="kpiCo2">—</span> <span class="kpi-unit">ton</span></div>
+              <div class="kpi-delta" id="kpiCo2Delta"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Enerji tasarrufu</div>
+              <div class="kpi-value" id="kpiSaving">—</div>
+              <div class="kpi-delta" id="kpiSavingDelta"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Karbon ayak izi azalımı</div>
+              <div class="kpi-value"><span id="kpiFootprint">—</span> <span class="kpi-unit">%</span></div>
+              <div class="kpi-delta" id="kpiFootprintDelta"></div>
+            </div>
+          </div>
+ 
+          <div class="db-charts-row">
+            <div class="db-card">
+              <div class="db-card-title">Aylık ısı dönüşümünüz (MWh)</div>
+              <div class="db-legend">
+                <span><span class="db-ls" style="background:#3B6D11"></span>Dönüştürülen ısı</span>
+                <span><span class="db-ls" style="background:rgba(156,255,89,.3)"></span>Hedefiniz</span>
+              </div>
+              <div style="position:relative;width:100%;height:220px;">
+                <canvas id="heatChart"></canvas>
+              </div>
+            </div>
+            <div class="db-card">
+              <div class="db-card-title">Karbon ayak izi azaltımınız (ton CO₂/ay)</div>
+              <div class="db-legend">
+                <span><span class="db-ls" style="background:#BA7517;border-radius:50%"></span>Aylık azaltım</span>
+                <span><span class="db-ls" style="background:#A32D2D;border-radius:50%"></span>Yıllık hedefiniz</span>
+              </div>
+              <div style="position:relative;width:100%;height:220px;">
+                <canvas id="co2Chart"></canvas>
+              </div>
+            </div>
+          </div>
+ 
+          <div class="db-bottom-row">
+            <div class="db-card">
+              <div class="db-card-title">Karbon hedefi — yıllık ilerlemeniz</div>
+              <div class="progress-list" id="carbonProgressList"></div>
+              <div style="margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)">
+                <div class="db-card-title" style="margin-bottom:12px;">Son 6 ay özet tablonuz</div>
+                <table class="db-table">
+                  <thead><tr><th>Ay</th><th>Isı (MWh)</th><th>CO₂ Azaltım (ton)</th><th>Tasarruf</th></tr></thead>
+                  <tbody id="monthlyTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+ 
+            <div class="db-card">
+              <div class="db-card-title">Hesap bilgileriniz</div>
+              <div style="display:grid;gap:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+                  <span style="color:var(--muted);font-size:13px;font-weight:800">Kurum adı</span>
+                  <span style="font-weight:900;font-size:14px" id="infoCompany">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+                  <span style="color:var(--muted);font-size:13px;font-weight:800">Kurum tipi</span>
+                  <span style="font-weight:900;font-size:14px" id="infoType">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+                  <span style="color:var(--muted);font-size:13px;font-weight:800">E-posta</span>
+                  <span style="font-weight:900;font-size:14px" id="infoEmail">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+                  <span style="color:var(--muted);font-size:13px;font-weight:800">Kayıt tarihi</span>
+                  <span style="font-weight:900;font-size:14px" id="infoDate">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+                  <span style="color:var(--muted);font-size:13px;font-weight:800">Sistem durumu</span>
+                  <span style="font-weight:900;font-size:14px;color:var(--green)">Aktif ✓</span>
+                </div>
+              </div>
+              <div style="margin-top:18px;padding:16px;border-radius:18px;background:linear-gradient(135deg,rgba(156,255,89,.1),rgba(54,215,255,.06));border:1px solid rgba(156,255,89,.2)">
+                <div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px">6 aylık toplam katkınız</div>
+                <div style="font-size:28px;font-weight:950;letter-spacing:-.04em;color:var(--green)" id="totalHeatBig">— MWh</div>
+                <div style="font-size:13px;color:#d8e8e4;margin-top:6px" id="totalCo2Big">— ton CO₂ atmosfere salınmadı</div>
+              </div>
+            </div>
+          </div>
+ 
+        </div>
+        <!-- /dashboardContent -->
+ 
+        <!-- Fabrika dışı kullanıcılar için mesaj -->
+        <div id="dashboardNonFactory" class="hidden">
+          <div class="empty-dashboard">
+            <svg viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto 16px"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <h3>Dashboard yalnızca fabrikalar için</h3>
+            <p>Karbon ayak izi ve dönüştürülen ısı verileri yalnızca <strong>Fabrika</strong> hesaplarında görüntülenir. Isı talebi oluşturmak veya uygun kaynakları görmek için temiz ısı pazarını ziyaret edin.</p>
+            <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+              <button class="btn btn-cyan" data-open="heatBuy">Isı Satın Al</button>
+              <a href="#market" class="btn btn-ghost">Pazara Git</a>
+            </div>
+          </div>
+        </div>
+ 
+      </div>
+    </section>
+ 
+    <!-- ===== HAKKIMIZDA ===== -->
+    <section class="section" id="hakkimizda">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="kicker">BioGate Nedir?</div>
+            <h2>Atık ısıyı finansal ve çevresel değere çeviren platform.</h2>
+          </div>
+        </div>
+        <div class="cards-3">
+          <div class="info-card glass">
+            <div class="info-head">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              SORUN
+            </div>
+            <p>Sanayi tesislerinde oluşan atık ısının önemli bir bölümü geri kazanılmadan atmosfere bırakılıyor. Bu durum enerji kaybı, maliyet artışı ve karbon salımı yaratıyor.</p>
+          </div>
+          <div class="info-card glass">
+            <div class="info-head cyan">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V22a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H2a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1A2 2 0 1 1 6.1 3.3l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V2a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 1 1.5h.1a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="1.7"/></svg>
+              ÇÖZÜM
+            </div>
+            <p>BioGate; atık ısıyı analiz eder, güvenli şekilde ayrıştırır, en uygun kullanım senaryosunu belirler ve enerjiye, soğutmaya veya gelir modeline dönüştürür.</p>
+            <div class="diagram">
+              <div class="block">Atık Isı</div><div class="arrow-line"></div><div class="block">Ayrıştırma</div><div class="arrow-line"></div><div class="block">Değer</div>
+            </div>
+          </div>
+          <div class="info-card glass">
+            <div class="info-head">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 4s-9.5-.8-14 4.2C2 12.7 4.5 19 10.8 19 18.5 19 20 4 20 4Z" stroke="currentColor" stroke-width="2"/><path d="M7 17c2-4 5-7 9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              KATKILARIMIZ
+            </div>
+            <div class="check-list">
+              <div><svg viewBox="0 0 24 24" fill="none"><path d="m20 6-11 11-5-5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg> CO₂ emisyonunda azalma</div>
+              <div><svg viewBox="0 0 24 24" fill="none"><path d="m20 6-11 11-5-5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Enerji verimliliğinde artış</div>
+              <div><svg viewBox="0 0 24 24" fill="none"><path d="m20 6-11 11-5-5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Düşük işletme maliyeti</div>
+              <div><svg viewBox="0 0 24 24" fill="none"><path d="m20 6-11 11-5-5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Yeşil sertifika ve ESG uyumu</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== NASIL ÇALIŞIR ===== -->
+    <section class="section" id="nasil-calisir">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Nasıl Çalışır?</div>
+            <h2>5 adımda atık ısıdan temiz enerji.</h2>
+          </div>
+        </div>
+        <div class="process">
+          <div class="process-card glass"><div class="number">1</div><h3>Atık Isıyı Topla</h3><p>Sanayi tesislerinde üretim sırasında açığa çıkan atık ısı, BioGate sistemine entegre sensörler ve altyapı ile toplanır.</p></div>
+          <div class="process-card glass"><div class="number">2</div><h3>Akıllı Dönüşüm Süreci</h3><p>Toplanan atık ısı, kullanılabilir temiz ısıya dönüştürülür.</p></div>
+          <div class="process-card glass"><div class="number">3</div><h3>Enerjiyi Depola ve Yönet</h3><p>Dönüştürülen enerji, ihtiyaç anına kadar depolanır ve dijital dashboard üzerinden aylık olarak takip edilir.</p></div>
+          <div class="process-card glass"><div class="number">4</div><h3>Temiz Enerjiyi Sat veya Kullan</h3><p>Fabrikalar bu enerjiyi kendi ihtiyaçları için kullanabilir ya da BioGate marketplace üzerinden diğer işletmelere satarak gelir elde eder.</p></div>
+          <div class="process-card glass"><div class="number">5</div><h3>Karbon Azaltımı ve Sertifikasyon</h3><p>Sistem, karbon emisyonunu azaltır ve işletmelere "BioGate Green Heat Certified" gibi sürdürülebilirlik sertifikaları kazandırır.</p></div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== MARKET ===== -->
+    <section class="section" id="market">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Temiz Isı Pazarı</div>
+            <h2>Yakın alıcılarla ticari ısı eşleştirmesi.</h2>
+          </div>
+        </div>
+        <div class="market-grid">
+          <div class="glass" style="padding:24px">
+            <div class="table">
+              <div class="market-row header"><span>Bölge</span><span>Sıcaklık</span><span>Talep</span><span>Durum</span></div>
+              <div class="market-row"><strong>Gebze OSB</strong><span>92°C</span><span>Sera ısıtma</span><span class="pill">Yüksek</span></div>
+              <div class="market-row"><strong>Düzce I. OSB</strong><span>74°C</span><span>Kurutma hattı</span><span class="pill">Uygun</span></div>
+              <div class="market-row"><strong>Sakarya OSB</strong><span>118°C</span><span>Soğuk depo</span><span class="pill">Fizibilite</span></div>
+              <div class="market-row"><strong>Dilovası</strong><span>140°C</span><span>Proses ön ısıtma</span><span class="pill">Yüksek</span></div>
+            </div>
+          </div>
+          <div class="glass" style="padding:24px">
+            <div class="kicker">Payback Engine</div>
+            <h3 style="font-size:30px;letter-spacing:-.05em;margin:10px 0 20px">Amortisman hesaplayıcı</h3>
+            <div class="form-grid">
+              <div class="field"><label>Yatırım maliyeti (TL)</label><input id="investment" type="number" value="6500000"></div>
+              <div class="field"><label>Yıllık gelir / tasarruf (TL)</label><input id="income" type="number" value="1800000"></div>
+              <div class="field"><label>Yıllık bakım gideri (TL)</label><input id="maintenance" type="number" value="350000"></div>
+            </div>
+            <div class="calc-result">
+              <div style="color:var(--muted);font-weight:800">Tahmini geri ödeme süresi</div>
+              <strong id="payback">4.5</strong> <span style="font-weight:900">yıl</span>
+              <div class="range"><span id="paybackBar"></span></div>
+              <p id="paybackComment" style="color:#d8e8e4;margin:12px 0 0;line-height:1.6">Detaylı fizibilite gerekir.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== SERTİFİKA ===== -->
+    <section class="section" id="sertifika">
+      <div class="container">
+        <div class="footer-cta glass">
+          <div>
+            <div class="kicker">Sertifikasyon Merkezi</div>
+            <h2>Enerji kaybını kazanca dönüştüren <span class="accent">sürdürülebilir sanayi çözümü.</span></h2>
+            <p style="color:var(--muted);line-height:1.7;max-width:780px">BioGate Green Heat Certified rozeti; dönüştürülen atık ısı, azaltılan CO₂e ve doğrulanan enerji tasarrufu metriklerini tek sayfada gösterir.</p>
+          </div>
+          <button class="btn btn-primary" data-open="certificate">Sertifika Önizle</button>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== SSS ===== -->
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-head"><div><div class="kicker">SSS</div><h2>Sıkça sorulan sorular</h2></div></div>
+        <div class="faq-list">
+          <div class="faq-item active"><button class="faq-q">Her fabrika atık ısısını satabilir mi?<svg viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></button><div class="faq-a">Hayır. Sıcaklık, süreklilik, kirletici riski, mesafe ve yakın alıcı varlığı uygun olmalıdır. BioGate önce ön fizibilite yapar.</div></div>
+          <div class="faq-item"><button class="faq-q">Isı doğrudan taşınabilir mi?<svg viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></button><div class="faq-a">Kısa mesafede sıcak su veya buhar hattıyla taşınabilir. 0–3 km arası daha gerçekçi, şehirler arası ısı satışı genelde ekonomik değildir.</div></div>
+          <div class="faq-item"><button class="faq-q">Atık ısıdan soğutma yapılabilir mi?<svg viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2"/></svg></button><div class="faq-a">Evet. Absorpsiyonlu veya adsorpsiyonlu soğutma sistemleriyle mümkündür; ancak yatırım maliyeti yüksek olduğu için büyük hal, soğuk depo veya OSB ölçeğinde değerlendirilmelidir.</div></div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== ADMIN ===== -->
+    <section class="section hidden" id="admin">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Geliştirici Alanı</div>
+            <h2>Admin paneli ve manuel değerlendirme merkezi.</h2>
+          </div>
+          <p>Bu alan yalnızca yetkili geliştirici hesaplarında görünür. Fabrika kaynakları ve ısı alıcı talepleri burada ayrı ayrı incelenir; geliştirici ekip uygun gördüğü alıcıya bildirim gönderir.</p>
+        </div>
+        <div class="market-grid">
+          <div class="glass" style="padding:24px">
+            <div class="dash-title">Mevcut Fabrika Kaynakları</div>
+            <div class="table" id="adminFactorySources">
+              <div class="market-row header"><span>Fabrika/Kaynak</span><span>Şehir</span><span>Sıcaklık</span><span>Durum</span></div>
+            </div>
+          </div>
+          <div class="glass" style="padding:24px">
+            <div class="dash-title">Isı Alıcı Talepleri</div>
+            <div class="table" id="adminRequests">
+              <div class="market-row header"><span>Şehir</span><span>Sıcaklık</span><span>Kullanım</span><span>Durum</span></div>
+            </div>
+          </div>
+          <div class="glass form-grid" style="padding:24px">
+            <div class="dash-title">Manuel Bildirim / Uygun Kaynak Kaydı</div>
+            <div class="field"><label>Talep</label><select id="matchRequest"></select></div>
+            <div class="field"><label>Uygun görülen fabrika / ısı kaynağı</label><input id="matchFactory" placeholder="Örn: Düzce I. OSB - Atık ısı kaynağı"></div>
+            <div class="field"><label>Durum</label>
+              <select id="matchStatus">
+                <option>Ön değerlendirme</option><option>Uygun kaynak bulundu</option><option>Fizibilite gerekli</option><option>Uygun değil</option><option>Tamamlandı</option>
+              </select>
+            </div>
+            <div class="field"><label>Not</label><textarea id="matchNote" placeholder="Alıcıya veya ekip içine düşülecek not"></textarea></div>
+            <button class="btn btn-primary" id="createMatchBtn">Alıcıya Bildirim Gönder</button>
+            <div class="form-message" id="matchMessage"></div>
+          </div>
+        </div>
+        <div class="glass" style="padding:24px;margin-top:22px">
+          <div class="dash-title">Gönderilen Alıcı Bildirimleri</div>
+          <div class="table" id="adminMatches">
+            <div class="market-row header"><span>Talep</span><span>Kaynak</span><span>Durum</span><span>Tarih</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== İLETİŞİM ===== -->
+    <section class="section" id="iletisim">
+      <div class="container">
+        <div class="market-grid">
+          <div>
+            <div class="kicker">İletişim</div>
+            <h2>BioGate pilotu için bizimle görüşün.</h2>
+            <p style="color:var(--muted);line-height:1.8;max-width:560px;margin-bottom:28px">Düzce, Sakarya ve Kocaeli OSB hattında atık ısı uygunluk analizi, temiz ısı pazarı ve sertifikasyon süreçleri için bizimle iletişime geçin.</p>
+            <div class="contact-info">
+              <div class="contact-info-item">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Z" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span>seydayal@gmail.com</span>
+              </div>
+              <div class="contact-info-item">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.5 16.21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span>0544 326 60 40</span>
+              </div>
+            </div>
+          </div>
+          <form class="glass form-grid" style="padding:24px" id="contactForm">
+            <div class="field"><label>Ad Soyad</label><input name="name" required placeholder="Adınız"></div>
+            <div class="field"><label>E-posta</label><input name="email" type="email" required placeholder="ornek@firma.com"></div>
+            <div class="field"><label>Kurum</label><input name="company" placeholder="Firma / OSB / Belediye"></div>
+            <div class="field"><label>Mesaj</label><textarea name="message" placeholder="Projenizi kısaca anlatın"></textarea></div>
+            <button class="btn btn-primary" type="submit">Gönder</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+ 
+  <footer>
+    <div class="container footer-inner">
+      <a class="brand" href="#top"><span class="logo"><svg viewBox="0 0 24 24"><path d="M7.5 7.5 10.7 2h2.6l3.2 5.5"/><path d="M17.5 7.5h-5.2l-1.3 2.2"/><path d="m18.6 9.4 3.2 5.6-1.3 2.2h-6.4"/><path d="M10 21.5H3.6L2.3 19.3l3.2-5.6"/></svg></span>BioGate</a>
+      <span>© 2026 BioGate. Atık ısıdan temiz enerjiye geçiş sistemi.</span>
+    </div>
+  </footer>
+ 
+  <!-- LOGIN MODAL -->
+  <div class="modal" id="login">
+    <div class="modal-box glass">
+      <button class="close" data-close>×</button>
+      <h3>Kurumsal Giriş</h3>
+      <p>Fabrika, alıcı ve OSB yönetimi için güvenli erişim.</p>
+      <div class="form-grid">
+        <div class="field"><label>E-posta</label><input id="loginEmail" type="email" placeholder="mail@firma.com"></div>
+        <div class="field">
+          <label>Şifre</label>
+          <input id="loginPassword" type="password" placeholder="••••••••">
+          <div class="field-error" id="loginError">E-posta veya şifre hatalı. Lütfen tekrar deneyin.</div>
+        </div>
+        <button class="btn btn-primary" id="loginSubmit">Giriş Yap</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- REGISTER MODAL -->
+  <div class="modal" id="register">
+    <div class="modal-box glass">
+      <button class="close" data-close>×</button>
+      <h3>Kayıt Ol</h3>
+      <p>BioGate paneli için kurum profili oluşturun. Hesabınız demo modunda otomatik doğrulanır.</p>
+      <div class="form-grid">
+        <div class="field"><label>Kurum tipi</label><select id="regType"><option>Fabrika</option><option>Isı alıcısı</option><option>OSB yönetimi</option><option>Yatırımcı</option></select></div>
+        <div class="field"><label>Kurum adı</label><input id="regCompany" placeholder="Kurum adı"></div>
+        <div class="field"><label>E-posta</label><input id="regEmail" type="email" placeholder="mail@firma.com"></div>
+        <div class="field"><label>Şifre</label><input id="regPassword" type="password" placeholder="En az 6 karakter"></div>
+        <div class="field-error" id="regError"></div>
+        <button class="btn btn-primary" id="registerSubmit">Kayıt Oluştur</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- HEAT BUY MODAL -->
+  <div class="modal" id="heatBuy">
+    <div class="modal-box glass">
+      <button class="close" data-close>×</button>
+      <h3>Temiz Isı Talebi</h3>
+      <p>İstediğiniz sıcaklık, konum ve kullanım amacına göre temiz ısı talebi oluşturun.</p>
+      <div class="form-grid">
+        <div class="field"><label>İstenen sıcaklık</label><select id="heatTemp"><option>60–80°C</option><option>80–120°C</option><option>120°C+</option></select></div>
+        <div class="field"><label>Kullanım amacı</label><select id="heatPurpose"><option>Sera ısıtma</option><option>Kurutma hattı</option><option>Sıcak su</option><option>Soğuk depo / CoolLoop</option></select></div>
+        <div class="field">
+          <label>Şehir</label>
+          <select id="heatCity">
+            <option value="">Şehir seçin</option>
+            <option>Düzce</option><option>Sakarya</option><option>Kocaeli</option>
+            <option>İstanbul</option><option>Ankara</option><option>Bursa</option>
+          </select>
+        </div>
+        <button class="btn btn-cyan" id="heatSubmit">Talep Oluştur</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- CERTIFICATE MODAL -->
+  <div class="modal" id="certificate">
+    <div class="modal-box glass">
+      <button class="close" data-close>×</button>
+      <h3>Green Heat Certified</h3>
+      <p>Bu sertifika önizlemesi, tesisin atık ısı dönüşüm performansını temsil eder.</p>
+      <div class="calc-result">
+        <div class="label">Sertifikalı Tesis</div>
+        <strong style="font-size:34px">BioGate Green Heat</strong>
+        <p style="margin:12px 0 0;color:#d8e8e4">18.4 GWh dönüştürülen atık ısı • 6.920 ton CO₂ azaltımı • ESG uyum raporu</p>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- NOTIFICATIONS MODAL -->
+  <div class="modal" id="notifications">
+    <div class="modal-box glass">
+      <button class="close" data-close>×</button>
+      <h3>Bildirimler</h3>
+      <p>Isı taleplerinizle ilgili eşleşme ve durum güncellemeleri burada görünür.</p>
+      <div class="form-grid" id="notificationList">
+        <div class="contact-info-item"><span>Henüz bildiriminiz yok.</span></div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="toast" id="toast"></div>
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+ 
+  <script>
+    /* ========== VERİ DEPOSU ========== */
+    const DB = {
+      users:    JSON.parse(localStorage.getItem('bg_users')    || '[]'),
+      requests: JSON.parse(localStorage.getItem('bg_requests') || '[]'),
+      matches:  JSON.parse(localStorage.getItem('bg_matches')  || '[]'),
+      save() {
+        localStorage.setItem('bg_users',    JSON.stringify(this.users));
+        localStorage.setItem('bg_requests', JSON.stringify(this.requests));
+        localStorage.setItem('bg_matches',  JSON.stringify(this.matches));
+      }
+    };
+ 
+    let currentUser = JSON.parse(sessionStorage.getItem('bg_current') || 'null');
+    let dbCharts = {};
+ 
+    /* ========== KULLANICIYA ÖZGÜ VERİ ÜRETICI ==========
+       Her kullanıcının e-postasından deterministik seed türetilir.
+       Böylece aynı kullanıcı her girişte aynı verileri görür,
+       farklı kullanıcılar birbirinden tamamen farklı veriler görür. */
+    function hashCode(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+      return Math.abs(h);
+    }
+ 
+    function generateUserData(user) {
+      // Kullanıcıya özgü seed — sadece bu kullanıcının e-postasına bağlı
+      const seed = hashCode(user.email);
+      // 0.4–2.0 arası çarpan (küçük / orta / büyük fabrika)
+      const scale = 0.4 + (seed % 100) / 100 * 1.6;
+ 
+      const months = ['Ara 25','Oca 26','Şub 26','Mar 26','Nis 26','May 26'];
+ 
+      // Aylık ısı (MWh) — bu kullanıcıya özgü
+      const baseHeat = Math.round((80 + (seed % 120)) * scale);
+      const heatData = months.map((_, i) => {
+        const v = baseHeat + Math.round(((hashCode(user.email + i) % 60) - 20) * scale);
+        return Math.max(20, v);
+      });
+ 
+      // CO2: her MWh ≈ 0.37 ton azaltım
+      const co2Data    = heatData.map(h => Math.round(h * 0.37));
+      const avgCo2     = Math.round(co2Data.reduce((a,b) => a+b,0) / co2Data.length);
+      const co2Target  = Math.round(avgCo2 * 1.15);
+ 
+      // Tasarruf: 1 MWh ≈ 2.600 TL
+      const savingData = heatData.map(h => Math.round(h * 2600));
+ 
+      // Kümülatif toplamlar
+      const totalHeat = heatData.reduce((a,b) => a+b, 0);
+      const totalCo2  = co2Data.reduce((a,b) => a+b, 0);
+      const totalSav  = savingData.reduce((a,b) => a+b, 0);
+ 
+      // Karbon ayak izi azalım yüzdesi
+      const baselineEmission = Math.round(totalCo2 / 0.18);
+      const footprintPct     = Math.round((totalCo2 / baselineEmission) * 100);
+ 
+      const yearlyTarget = co2Target * 12;
+ 
+      // Aylık delta (son 2 ay)
+      const lastHeat  = heatData[heatData.length - 1];
+      const prevHeat  = heatData[heatData.length - 2];
+      const heatDelta = Math.round(((lastHeat - prevHeat) / prevHeat) * 100);
+ 
+      const lastCo2  = co2Data[co2Data.length - 1];
+      const prevCo2  = co2Data[co2Data.length - 2];
+      const co2Delta = Math.round(((lastCo2 - prevCo2) / prevCo2) * 100);
+ 
+      // Hedef çizgisi: o kullanıcının aylık ortalamasının %10 üzeri
+      const heatTarget = heatData.map(() => Math.round(baseHeat * 1.1));
+ 
+      return { months, heatData, co2Data, co2Target, savingData, totalHeat, totalCo2, totalSav, footprintPct, yearlyTarget, heatDelta, co2Delta, heatTarget };
+    }
+ 
+    /* ========== TOAST ========== */
+    function showToast(msg, err = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (err ? ' error' : '');
+      clearTimeout(t._t);
+      t._t = setTimeout(() => t.classList.remove('show'), 3800);
+    }
+ 
+    /* ========== MODAL ========== */
+    document.querySelectorAll('[data-open]').forEach(btn =>
+      btn.addEventListener('click', () => openModal(btn.dataset.open))
+    );
+    document.querySelectorAll('[data-close]').forEach(btn =>
+      btn.addEventListener('click', () => btn.closest('.modal').classList.remove('show'))
+    );
+    document.querySelectorAll('.modal').forEach(m =>
+      m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); })
+    );
+    function openModal(id)  { document.getElementById(id)?.classList.add('show'); }
+    function closeModal(id) { document.getElementById(id)?.classList.remove('show'); }
+ 
+    /* ========== PARA BİÇİMLENDİRME ========== */
+    function fmtTL(val) {
+      if (val >= 1_000_000) return '₺' + (val / 1_000_000).toFixed(1) + 'M';
+      if (val >= 1_000)     return '₺' + Math.round(val / 1000) + 'K';
+      return '₺' + val;
+    }
+ 
+    /* ========== DASHBOARD — yalnızca Fabrika tipi kullanıcılar ========== */
+    function showDashboard(user) {
+      document.getElementById('dashboardSection').classList.add('visible');
+ 
+      // Kullanıcı banner
+      const initials = (user.company || user.email).substring(0, 2).toUpperCase();
+      document.getElementById('userAvatar').textContent     = initials;
+      document.getElementById('userBannerName').textContent = user.company || user.email;
+      document.getElementById('userBannerMeta').textContent =
+        (user.type || (user.isAdmin ? 'Admin' : '')) + ' · ' + (user.email) + ' · Kayıt: ' + (user.regDate || '—');
+ 
+      const isFactory = user.type === 'Fabrika' || user.isAdmin;
+ 
+      if (isFactory) {
+        // Fabrika dashboard — kullanıcıya özgü veri
+        document.getElementById('dashboardContent').style.display   = 'block';
+        document.getElementById('dashboardNonFactory').classList.add('hidden');
+ 
+        const d = generateUserData(user);
+        fillDashboard(user, d);
+        setTimeout(() => initDashboardCharts(d), 120);
+ 
+        document.getElementById('dbSub').textContent =
+          'Sadece sizin veriniz — ' + (user.company || user.email);
+      } else {
+        // Fabrika olmayan kullanıcı — dashboard veri yok, bilgi mesajı göster
+        document.getElementById('dashboardContent').style.display = 'none';
+        document.getElementById('dashboardNonFactory').classList.remove('hidden');
+      }
+    }
+ 
+    function fillDashboard(user, d) {
+      document.getElementById('kpiHeat').textContent      = d.totalHeat.toLocaleString('tr-TR');
+      document.getElementById('kpiCo2').textContent       = d.totalCo2.toLocaleString('tr-TR');
+      document.getElementById('kpiSaving').textContent    = fmtTL(d.totalSav);
+      document.getElementById('kpiFootprint').textContent = d.footprintPct;
+ 
+      const hSign = d.heatDelta >= 0 ? '↑' : '↓';
+      const cSign = d.co2Delta  >= 0 ? '↑' : '↓';
+      document.getElementById('kpiHeatDelta').textContent      = hSign + ' %' + Math.abs(d.heatDelta) + ' geçen aya göre';
+      document.getElementById('kpiCo2Delta').textContent       = cSign + ' %' + Math.abs(d.co2Delta)  + ' geçen aya göre';
+      document.getElementById('kpiSavingDelta').textContent    = '6 aylık kümülatif tasarruf';
+      document.getElementById('kpiFootprintDelta').textContent = '↓ karbon ayak iziniz düşüyor';
+ 
+      document.getElementById('infoCompany').textContent = user.company || '—';
+      document.getElementById('infoType').textContent    = user.type    || (user.isAdmin ? 'Admin' : '—');
+      document.getElementById('infoEmail').textContent   = user.email;
+      document.getElementById('infoDate').textContent    = user.regDate || new Date().toLocaleDateString('tr-TR');
+ 
+      document.getElementById('totalHeatBig').textContent = d.totalHeat.toLocaleString('tr-TR') + ' MWh';
+      document.getElementById('totalCo2Big').textContent  = d.totalCo2.toLocaleString('tr-TR') + ' ton CO₂ atmosfere salınmadı';
+ 
+      // Karbon hedef progress
+      const achieved = d.totalCo2;
+      const target   = d.yearlyTarget;
+      const pct      = Math.min(100, Math.round((achieved / target) * 100));
+      const barColor = pct >= 80 ? 'linear-gradient(90deg,#3B6D11,#9cff59)'
+                     : pct >= 50 ? 'linear-gradient(90deg,#BA7517,#ffc05a)'
+                     : 'linear-gradient(90deg,#A32D2D,#ff9b9b)';
+ 
+      document.getElementById('carbonProgressList').innerHTML = `
+        <div class="pl-item">
+          <div class="pl-top">
+            <strong>${user.company || user.email}</strong>
+            <span>${achieved.toLocaleString('tr-TR')} / ${target.toLocaleString('tr-TR')} ton (yıllık hedef)</span>
+          </div>
+          <div class="pl-bar"><div class="pl-fill" style="width:${pct}%;background:${barColor}"></div></div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);font-weight:800">
+          Hedefinizin %${pct}'ine ulaştınız${pct >= 100 ? ' ✓ Tebrikler!' : ''}
+        </div>`;
+ 
+      // Aylık tablo
+      document.getElementById('monthlyTableBody').innerHTML = d.months.map((m, i) => `
+        <tr>
+          <td>${m}</td>
+          <td>${d.heatData[i].toLocaleString('tr-TR')}</td>
+          <td>${d.co2Data[i].toLocaleString('tr-TR')}</td>
+          <td>+${fmtTL(d.savingData[i])}</td>
+        </tr>`).join('');
+    }
+ 
+    function initDashboardCharts(d) {
+      if (dbCharts.heat) { Object.values(dbCharts).forEach(c => c.destroy()); dbCharts = {}; }
+ 
+      dbCharts.heat = new Chart(document.getElementById('heatChart'), {
+        type: 'bar',
+        data: {
+          labels: d.months,
+          datasets: [
+            { label: 'Dönüştürülen ısı (MWh)', data: d.heatData, backgroundColor: '#3B6D11', borderRadius: 5 },
+            { label: 'Hedefiniz',               data: d.heatTarget, backgroundColor: 'rgba(156,255,89,.2)', borderRadius: 5 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks:{color:'#9fb4b4',font:{size:11}}, grid:{display:false}, border:{display:false} },
+            y: { ticks:{color:'#9fb4b4',font:{size:11},callback:v=>v+' MWh'}, grid:{color:'rgba(255,255,255,.06)'}, border:{display:false} }
+          }
+        }
+      });
+ 
+      dbCharts.co2 = new Chart(document.getElementById('co2Chart'), {
+        type: 'line',
+        data: {
+          labels: d.months,
+          datasets: [
+            { label: 'Aylık azaltım (ton)', data: d.co2Data, borderColor:'#BA7517', backgroundColor:'rgba(186,117,23,.15)', tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:'#BA7517' },
+            { label: 'Hedefiniz', data: d.months.map(() => d.co2Target), borderColor:'#A32D2D', borderDash:[6,4], pointRadius:0, tension:0 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks:{color:'#9fb4b4',font:{size:11}}, grid:{display:false}, border:{display:false} },
+            y: { ticks:{color:'#9fb4b4',font:{size:11},callback:v=>v+' t'}, grid:{color:'rgba(255,255,255,.06)'}, border:{display:false}, min: Math.max(0, Math.min(...d.co2Data) - 10) }
+          }
+        }
+      });
+    }
+ 
+    /* ========== LOGIN ========== */
+    function loginUser(user) {
+      currentUser = user;
+      sessionStorage.setItem('bg_current', JSON.stringify(user));
+ 
+      document.getElementById('guestActions').style.display = 'none';
+      document.getElementById('userActions').style.display  = 'flex';
+      document.getElementById('userName').textContent = user.company || user.email;
+ 
+      if (user.isAdmin) {
+        document.getElementById('adminNavLink').classList.remove('hidden');
+        document.getElementById('admin').classList.remove('hidden');
+        renderAdmin();
+      }
+ 
+      showDashboard(user);
+      updateNotifications();
+      closeModal('login');
+ 
+      const label = user.type === 'Fabrika'
+        ? 'Kişisel fabrika paneliniz yüklendi.'
+        : 'Hoş geldiniz! Isı talebi oluşturmak için "Isı Satın Al" butonunu kullanabilirsiniz.';
+      showToast('Hoş geldiniz, ' + (user.company || user.email) + '! ' + label);
+ 
+      setTimeout(() => document.getElementById('dashboardSection').scrollIntoView({ behavior:'smooth' }), 200);
+    }
+ 
+    function logoutUser() {
+      currentUser = null;
+      sessionStorage.removeItem('bg_current');
+      document.getElementById('guestActions').style.display = 'flex';
+      document.getElementById('userActions').style.display  = 'none';
+      document.getElementById('adminNavLink').classList.add('hidden');
+      document.getElementById('admin').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.remove('visible');
+      if (dbCharts.heat) { Object.values(dbCharts).forEach(c => c.destroy()); dbCharts = {}; }
+      showToast('Çıkış yapıldı.');
+    }
+ 
+    document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+ 
+    document.getElementById('loginSubmit').addEventListener('click', () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPassword').value;
+      const err   = document.getElementById('loginError');
+      err.classList.remove('visible');
+ 
+      if (email === 'admin@biogate.com' && pass === 'admin123') {
+        loginUser({ email, company:'BioGate Admin', type:'Fabrika', isAdmin:true, regDate:'01.01.2026' });
+        return;
+      }
+      const user = DB.users.find(u => u.email === email && u.password === pass);
+      if (!user) { err.classList.add('visible'); return; }
+      loginUser(user);
+    });
+ 
+    /* ========== KAYIT ========== */
+    document.getElementById('registerSubmit').addEventListener('click', () => {
+      const type    = document.getElementById('regType').value;
+      const company = document.getElementById('regCompany').value.trim();
+      const email   = document.getElementById('regEmail').value.trim();
+      const pass    = document.getElementById('regPassword').value;
+      const err     = document.getElementById('regError');
+      err.classList.remove('visible');
+ 
+      if (!company || !email || pass.length < 6) {
+        err.textContent = 'Tüm alanları doldurun. Şifre en az 6 karakter olmalı.';
+        err.classList.add('visible'); return;
+      }
+      if (DB.users.find(u => u.email === email)) {
+        err.textContent = 'Bu e-posta zaten kayıtlı.';
+        err.classList.add('visible'); return;
+      }
+      const user = { type, company, email, password:pass, isAdmin:false, regDate:new Date().toLocaleDateString('tr-TR') };
+      DB.users.push(user); DB.save();
+      closeModal('register');
+      loginUser(user);
+    });
+ 
+    /* ========== ISI TALEP ========== */
+    document.getElementById('heatSubmit').addEventListener('click', () => {
+      if (!currentUser) { closeModal('heatBuy'); openModal('login'); return; }
+      const temp    = document.getElementById('heatTemp').value;
+      const purpose = document.getElementById('heatPurpose').value;
+      const city    = document.getElementById('heatCity').value;
+      if (!city) { showToast('Lütfen şehir seçin.', true); return; }
+ 
+      const req = { id:Date.now(), userEmail:currentUser.email, company:currentUser.company, temp, purpose, city, status:'Beklemede', date:new Date().toLocaleDateString('tr-TR') };
+      DB.requests.push(req); DB.save();
+      closeModal('heatBuy');
+      showToast('Isı talebiniz oluşturuldu. Ekibimiz en kısa sürede değerlendirip bildirim gönderecek.');
+      renderAdmin();
+      updateNotifications();
+    });
+ 
+    /* ========== BİLDİRİMLER ========== */
+    function updateNotifications() {
+      if (!currentUser) return;
+      const myMatches = DB.matches.filter(m => m.userEmail === currentUser.email);
+      const nc = document.getElementById('notificationCount');
+      if (myMatches.length > 0) { nc.textContent = myMatches.length; nc.classList.remove('hidden'); }
+      else { nc.classList.add('hidden'); }
+ 
+      document.getElementById('notificationList').innerHTML = myMatches.length === 0
+        ? '<div class="contact-info-item"><span>Henüz bildiriminiz yok.</span></div>'
+        : myMatches.map(m => `
+            <div class="notification-card">
+              <strong>Isı Talebi Eşleşmesi</strong>
+              ${m.factory} — ${m.status}
+              <small>${m.note ? 'Not: '+m.note+' · ' : ''}${m.date}</small>
+            </div>`).join('');
+    }
+ 
+    /* ========== ADMIN ========== */
+    function renderAdmin() {
+      const factories = DB.users.filter(u => u.type === 'Fabrika');
+      const srcEl = document.getElementById('adminFactorySources');
+      const srcHeader = srcEl.querySelector('.market-row.header');
+      srcEl.innerHTML = ''; srcEl.appendChild(srcHeader);
+      factories.length === 0
+        ? srcEl.innerHTML += '<div class="market-row"><span style="color:var(--muted)">Kayıtlı fabrika yok.</span></div>'
+        : factories.forEach(f => { srcEl.innerHTML += `<div class="market-row"><strong>${f.company}</strong><span>${f.email}</span><span>${f.regDate||'—'}</span><span class="pill">Aktif</span></div>`; });
+ 
+      const reqEl = document.getElementById('adminRequests');
+      const reqHeader = reqEl.querySelector('.market-row.header');
+      reqEl.innerHTML = ''; reqEl.appendChild(reqHeader);
+      const sel = document.getElementById('matchRequest');
+      sel.innerHTML = '';
+      DB.requests.length === 0
+        ? reqEl.innerHTML += '<div class="market-row"><span style="color:var(--muted)">Talep yok.</span></div>'
+        : DB.requests.forEach(r => {
+            reqEl.innerHTML += `<div class="market-row"><strong>${r.city}</strong><span>${r.temp}</span><span>${r.purpose}</span><span class="pill">${r.status}</span></div>`;
+            const opt = document.createElement('option');
+            opt.value = r.id;
+            opt.textContent = `${r.company} — ${r.city} (${r.purpose})`;
+            sel.appendChild(opt);
+          });
+ 
+      const matchEl = document.getElementById('adminMatches');
+      const matchHeader = matchEl.querySelector('.market-row.header');
+      matchEl.innerHTML = ''; matchEl.appendChild(matchHeader);
+      DB.matches.length === 0
+        ? matchEl.innerHTML += '<div class="market-row"><span style="color:var(--muted)">Henüz bildirim gönderilmedi.</span></div>'
+        : DB.matches.forEach(m => { matchEl.innerHTML += `<div class="market-row"><strong>${m.requestLabel}</strong><span>${m.factory}</span><span class="pill">${m.status}</span><span>${m.date}</span></div>`; });
+    }
+ 
+    document.getElementById('createMatchBtn').addEventListener('click', () => {
+      const reqId   = parseInt(document.getElementById('matchRequest').value);
+      const factory = document.getElementById('matchFactory').value.trim();
+      const status  = document.getElementById('matchStatus').value;
+      const note    = document.getElementById('matchNote').value.trim();
+      const msg     = document.getElementById('matchMessage');
+      if (!factory) { msg.textContent='Fabrika adı girin.'; msg.className='form-message error'; return; }
+      const req = DB.requests.find(r => r.id === reqId);
+      if (!req)  { msg.textContent='Talep bulunamadı.'; msg.className='form-message error'; return; }
+      const match = { id:Date.now(), requestId:reqId, requestLabel:req.company+' — '+req.city, userEmail:req.userEmail, factory, status, note, date:new Date().toLocaleDateString('tr-TR') };
+      DB.matches.push(match); req.status = status; DB.save();
+      msg.textContent='Bildirim gönderildi!'; msg.className='form-message';
+      document.getElementById('matchFactory').value = '';
+      document.getElementById('matchNote').value    = '';
+      renderAdmin(); updateNotifications();
+    });
+ 
+    /* ========== PAYBACK ========== */
+    function calcPayback() {
+      const inv = parseFloat(document.getElementById('investment').value) || 0;
+      const inc = parseFloat(document.getElementById('income').value)     || 0;
+      const mai = parseFloat(document.getElementById('maintenance').value)|| 0;
+      const net = inc - mai;
+      if (net <= 0) { document.getElementById('payback').textContent='∞'; document.getElementById('paybackBar').style.width='0%'; document.getElementById('paybackComment').textContent='Net gelir negatif — proje ekonomik değil.'; return; }
+      const years = (inv/net).toFixed(1);
+      document.getElementById('payback').textContent = years;
+      document.getElementById('paybackBar').style.width = Math.min(100, Math.max(5,(10-parseFloat(years))/10*100)) + '%';
+      document.getElementById('paybackComment').textContent =
+        parseFloat(years)<=3 ? 'Mükemmel geri dönüş — yatırım hızlı amorti eder.'
+        :parseFloat(years)<=5 ? 'İyi geri dönüş süresi — yatırım makul.'
+        :parseFloat(years)<=8 ? 'Orta vadeli yatırım — fizibilite önerilir.'
+        : 'Uzun vadeli — risk analizi gerekebilir.';
+    }
+    ['investment','income','maintenance'].forEach(id => document.getElementById(id).addEventListener('input', calcPayback));
+    calcPayback();
+ 
+    /* ========== FAQ ========== */
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const wasActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        if (!wasActive) item.classList.add('active');
+      });
+    });
+ 
+    /* ========== İLETİŞİM ========== */
+    document.getElementById('contactForm').addEventListener('submit', e => { e.preventDefault(); showToast('Mesajınız alındı. En kısa sürede dönüş yapacağız.'); e.target.reset(); });
+ 
+    /* ========== OTURUM DEVAM ========== */
+    if (currentUser) loginUser(currentUser);
+  </script>
+</body>
+</html>
+ 
